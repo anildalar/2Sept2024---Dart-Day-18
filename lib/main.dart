@@ -1,6 +1,7 @@
 //1 Import aread
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 //THis module will provide the defination for jsonDecode() jsonEncode()
 import 'dart:convert'; // Import this package for JSON decoding
@@ -15,7 +16,10 @@ ReturnType function(){
   //Every function may return some
 }
 */
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env"); // Load .env file
+
+  print('Hello Anil');
   var ceo1 = Anil();
   runApp(ceo1);
 }
@@ -80,8 +84,9 @@ class _MyClassState extends State<MyClass> {
     //async = paretn
     // I want to call the api here
     // await = child
-    var response =
-        await http.get(Uri.parse('http://localhost:1337/api/fav-fruits'));
+    var baseUrl = dotenv.get('BASE_URL');
+    print(baseUrl);
+    var response = await http.get(Uri.parse('${baseUrl}/api/fav-fruits'));
 
     print(response.statusCode);
     if (response.statusCode == 200) {
