@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 //THis module will provide the defination for jsonDecode() jsonEncode()
+//JSON String -> JSON Object(_JsonMap) jsonDecode()
+//JSON Object(_JsonMap) -> JSON String jsonEncode()
 import 'dart:convert'; // Import this package for JSON decoding
 
 //Entry function
@@ -65,6 +67,8 @@ class MyClass extends StatefulWidget {
 class _MyClassState extends State<MyClass> {
   //1. Property/Variable/State
   var name = "Anil"; // "String"
+  //[   0   ,    1    ,   2     ]
+  //var favFruits = ['Apple', 'Banna', "Grapes"]; //[List]
   var favFruits = []; //[List]
 
   //2. Constrcturo
@@ -92,27 +96,44 @@ class _MyClassState extends State<MyClass> {
     if (response.statusCode == 200) {
       print(response.body);
       print('The datatype of response.body is: ${response.body.runtimeType}');
-
+      //
       var jsonResponse = jsonDecode(response.body);
+      print('The datatype is: ${jsonResponse.runtimeType}');
       print(jsonResponse);
       var fruitsData = jsonResponse['data'];
+      setState(() {
+        favFruits = fruitsData;
+      });
+      print(fruitsData);
+      //[{},{}] AOO (Array of Objects)  Javascript
+      //[{},{}] List of Map objects  Dart
 
       // Extract fruit names and update favFruits list
-      setState(() {
+      /*  setState(() {
         favFruits = fruitsData
             .map<String>((fruit) => fruit['attributes']['name'])
             .toList();
-      });
+      }); */
 
-      print('Favorite Fruits: $favFruits');
+      //print('Favorite Fruits: $favFruits');
     }
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: ListView.builder(
-            itemCount: favFruits.length,
-            itemBuilder: (context, index) =>
-                ListTile(title: Text(favFruits[index]))));
+    return MaterialApp(
+      home: Scaffold(
+          body: ListView.builder(
+        itemCount: favFruits.length,
+        itemBuilder: (context, index) {
+          var fruit = favFruits[index]; //Map=Object
+          var attributes = fruit['attributes'];
+          var name = attributes['name'];
+          print(">>>> ${name}");
+          return ListTile(
+            title: Text(name),
+          );
+        },
+      )),
+    );
   }
 }
